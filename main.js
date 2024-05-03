@@ -14,8 +14,6 @@
 
 import Game from "./interfaces/gameInterface.js";
 
-
-
 const refs = {
   container: document.querySelector(".scene"),
 };
@@ -23,7 +21,6 @@ const refs = {
 const gameInterface = new Game(refs.container, handleCardClick);
 
 gameInterface.startNewGame();
-
 
 function handleCardClick({ target, currentTarget }) {
   if (
@@ -38,6 +35,7 @@ function handleCardClick({ target, currentTarget }) {
   console.log(gameInterface.field);
 }
 
+console.dir(Game);
 console.dir(Game);
 
 // function fillCardContainer() {
