@@ -65,6 +65,7 @@ export default class Game {
       this.openCardsCounter = counter;
     } else {
       this.field = this.#fillTheField();
+      this.openCardsCounter = 0;
       save(LS_KEYS.cardsList, this.field);
       save(LS_KEYS.counter, this.openCardsCounter);
     }
@@ -73,13 +74,12 @@ export default class Game {
     this.parentContainer.innerHTML = createMarkup(this.field);
   }
 
-  //TODO: fix listener for cards(add and remove)
-
   closeFlippedCards(firstCard, secondCard) {
     this.parentContainer.removeEventListener("click", this.handleCardClick);
     firstCard.isOpen = false;
     secondCard.isOpen = false;
 
+    save(LS_KEYS.cardsList, this.field);
 
     for (const card of this.parentContainer.children) {
       if (
@@ -94,6 +94,7 @@ export default class Game {
         this.parentContainer.addEventListener("click", this.handleCardClick),
       800
     );
+    console.log(this.field);
   }
 
   handleClicks(id) {
@@ -105,17 +106,17 @@ export default class Game {
     );
     const findCard = this.field.find((item) => item.id === Number(id));
 
-    findCard.isOpen = !findCard.isOpen;
-
     if (this.#clicks.length < 2) {
+      findCard.isOpen = true;
       this.#clicks.push(findCard);
+      save(LS_KEYS.cardsList, this.field);
     }
+
     if (this.#clicks.length === 2) {
       const [firstCard, secondCard] = this.#clicks;
 
       if (firstCard.symbol === secondCard.symbol) {
-        save(LS_KEYS.cardsList, this.field);
-        this.#clicks = this.#clicks.splice(0);
+        this.#clicks.splice(0);
         this.openCardsCounter += 1;
         save(LS_KEYS.counter, this.openCardsCounter);
 
@@ -127,9 +128,8 @@ export default class Game {
         }
       } else {
         setTimeout(() => {
+          this.#clicks.splice(0);
           this.closeFlippedCards(firstCard, secondCard);
-          console.log(firstCard, secondCard);
-          this.#clicks = this.#clicks.splice(0);
         }, 1000);
       }
     }
